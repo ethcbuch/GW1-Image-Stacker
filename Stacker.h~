@@ -21,7 +21,7 @@ class Stacker
 
 
  private:
-  std::string makeName(int n); 
+  std::string makeName(std::string file, int n); 
   std::string magic_number;
   int width;
   int height;

@@ -3,17 +3,14 @@
 #include <fstream>
 using namespace std;
 
-
-
-
 Stacker::Stacker()
 {
-  int width = 0;
-  int height = 0;
-  int max_color = 0;
-  int picCount = 0;
-  string magic_number = " ";
-  pixels.resize(width, vector<pixel> (height));
+  width = 0;
+  height = 0;
+  max_color = 0;
+  picCount = 0;
+  magic_number = " ";
+  pixels.resize(height, vector<pixel> (width));
 }
 
 Stacker::Stacker(string fileName, int n)
@@ -21,16 +18,16 @@ Stacker::Stacker(string fileName, int n)
   struct pixel p1;
   string name;
   ifstream inputFile;
-  name = makeName(fileName, 1);
+  this->fileName = fileName;
+  name = makeName(1);
   p1.red = 0;
   p1.green = 0;
   p1.blue = 0;
-  this->fileName = fileName;
   picCount = n;
   inputFile.open(name);
   inputFile >> magic_number >> width >> height >> max_color;
   inputFile.close();
-  pixels.resize(width, vector<pixel> (height));
+  pixels.resize(height, vector<pixel> (width));
   for(int r = 0; r < height; r++)
     {
       for(int c = 0; c < width; c++)
@@ -40,31 +37,51 @@ Stacker::Stacker(string fileName, int n)
     }
   for(int i = 1; i <= picCount; i++)
     {
-      getPixelData(this->fileName, i);
+      getPixelData(i);
     }
-
-
-  
+  storePixelData();
 }
 
-
-
-
-string Stacker::makeName(std::string fileName, int n)
+void Stacker::storePixelData()
 {
-  if(n < 10)
-    fileName = "ppms/" + fileName + "/" + fileName + "_00" + to_string(n) + ".ppm";
-  else
-    fileName = "ppms/" + fileName + "/" + fileName + "_0" + to_string(n) + ".ppm";
-  return fileName;
+  struct pixel p1;
+  ofstream outputFile;
+  outputFile.open(makeOutputName());
+  outputFile << magic_number << endl;
+  outputFile << width << " " << height << endl;
+  outputFile << max_color << endl;
+  for(int r = 0; r < height; r++)
+    {
+      for(int c = 0; c < width; c++)
+	{
+	  p1 = pixels[r][c];
+	  outputFile << p1.red / picCount << " " << p1.green / picCount << " " << p1.blue / picCount << endl;
+	}
+    }
+  outputFile.close(); 
 }
 
+string Stacker::makeOutputName()
+{
+  string name = fileName + ".ppm";
+  return name;
+}
 
-void Stacker::getPixelData(string fileName, int n)
+string Stacker::makeName(int n)
+{
+  string file;
+  if(n < 10)
+    file = "ppms/" + fileName + "/" + fileName + "_00" + to_string(n) + ".ppm";
+  else
+    file = "ppms/" + fileName + "/" + fileName + "_0" + to_string(n) + ".ppm";
+  return file;
+}
+
+void Stacker::getPixelData(int n)
 {
   struct pixel p1;  
   ifstream inputFile;
-  string name = makeName(fileName, n);
+  string name = makeName(n);
   inputFile.open(name);
   inputFile >> magic_number >> width >> height >> max_color;
   for(int r = 0; r < height; r++)
@@ -78,26 +95,22 @@ void Stacker::getPixelData(string fileName, int n)
   inputFile.close();
 }
 
-
-
-
-
-int Stacker::getWidth()
+Stacker::pixel Stacker::pixel::operator+(pixel a)
 {
-  return width;
+  struct pixel p1;
+  p1.red = this->red + a.red;
+  p1.green = this->green + a.green;
+  p1.blue = this->blue + a.blue;
+  return p1;
 }
 
-int Stacker::getHeight()
+void Stacker::printInfo()
 {
-  return height;
-}
-
-int Stacker::getMax_color()
-{
-  return max_color;
-}
-
-int Stacker::getpicCount()
-{
-  return picCount;
+  cout << "Stacking Images: " << endl;
+  for(int i = 1; i <= picCount; i++)
+    {
+      cout << "\t" << makeName(i) << endl;
+    }
+  cout << "Stacking succeeded." << endl;
+  cout << "Output written to: " << makeOutputName() << endl;
 }

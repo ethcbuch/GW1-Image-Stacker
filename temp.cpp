@@ -31,51 +31,75 @@ pixel operator+(pixel a, pixel b)
   return p1;
 }
 
-void getPixelData(string file, n) //Can just use private member 
+vector<vector<pixel>> getPixelData(vector<vector<pixel>> temp,string file, int n) //Can just use private member 
 {
   struct pixel p1;
-  struct pixel p2;
+  int row,col;
   ifstream inputFile;
-  string name = makeName(file, n);
-  string magic_number;
-  int col,row,max;
   vector<vector<pixel>> pixels;
-  inputFile.open(name);
-  inputFile >> magic_number >> col >> row >> max;
-  pixels.resize(col, vector<pixel> (row));
-  for(int r = 0; r < row; r++)
+  pixels = temp;
+  if(n >= 1)
     {
-      
-    }
-
-
-
-  
-  for(int r = 0; r < row; r++)
-    {
-      for(int c = 0; c < col; c++)
+      string name = makeName(file, n);
+      string magic_number;
+      int max;
+      inputFile.open(name);
+      inputFile >> magic_number >> col >> row >> max;
+      for(int r = 0; r < row; r++)
 	{
-	  inputFile >> p1.red >> p1.green >> p1.blue;
-	  pixels[r][c] = pixels[r][c] + p1;
+	  for(int c = 0; c < col; c++)
+	    {
+	      inputFile >> p1.red >> p1.green >> p1.blue;
+	      pixels[r][c] = pixels[r][c] + p1;
+	    }
+	}
+      inputFile.close();
+      return getPixelData(pixels, file, n - 1);
+    }
+  else if(n == 0)
+    {
+      return pixels;
+    }
+  return temp;
+}
+
+
+
+string makeOutputName(string fileName)
+{
+  string name = fileName + ".ppm";
+  return name;
+}
+
+void storePixelData()
+{
+  struct pixel p1;
+  ofstream outputFile;
+  outputFile.open(makeOutputName(fileName));
+  if(!outputFile)
+    {
+      cout << "Error: could not open output file" << endl;
+      exit(1);
+    }
+  outputFile << P3 << endl;
+  outputFile << width << " " << height << endl;
+  outputFile << max_color << endl;
+  for(int r = 0; r < height; r++)
+    {
+      for(int c = 0; c < width; c++)
+	{
+	  p1 = pixels[r][c];
+	  outputFile << p1.red / picCount << " " << p1.green / picCount << " " << p1.blue / picCount << endl;
 	}
     }
-  inputFile.close();
+  outputFile.close(); 
 }
-  
-
-
-
 
 
 int main()
 {
   string file;
   cin >> file;
-  getPixelData(file);
-
-
-
-
-  
+  storePixelData(file, 600, 600, 255, "P3", 10);
   return 0;
 }

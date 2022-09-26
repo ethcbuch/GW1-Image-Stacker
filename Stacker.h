@@ -1,26 +1,25 @@
 #ifndef STACKER_H
 #define STACKER_H
-
 #include <string>
 #include <vector>
 
-class Stacker
-{
+class Stacker {
  public:
   Stacker();
   Stacker(std::string fileName, int picCount);
-  void printInfo();
+  
  private:
   struct pixel {
-    int red;
-    int green;
-    int blue;
+    int red = 0;
+    int green = 0;
+    int blue = 0;
     pixel operator+(pixel a);
   };
-  void storePixelData();
-  std::string makeOutputName();
-  std::string makeName(int n);
   void getPixelData(int n);
+  void storePixelData();
+  void printInfo();
+  std::string makeName(int n);
+  std::string makeOutputName();
   std::string magic_number;
   int width;
   int height;
@@ -30,4 +29,4 @@ class Stacker
   std::vector<std::vector<pixel>> pixels;
 };
 
-#endif 
+#endif

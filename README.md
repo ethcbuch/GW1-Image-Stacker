@@ -1,7 +1,7 @@
 # GW1-Image-Stacker
 
 
-The Image Stacker Group Project by Hunter Johnson and Ethan *insert last name here*
+The Image Stacker Group Project by Hunter Johnson and Ethan Buchanan
 
 This program takes in a select file name inside of the ppms folder, and then reads in the ppm data from the files and stacks the images to result in a clearer image.
 

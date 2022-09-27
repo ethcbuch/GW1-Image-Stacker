@@ -1,5 +1,15 @@
+/**
+ * @file main.cpp
+ * @author Ethan Buchanan and Hunter Johnson
+ * @date 2022-09-27
+ * @brief Main implementation
+ * 
+ * Prompts user for file and stacks that image
+ */
+
 #include "Stacker.h"
 #include <iostream>
+
 using namespace std;
 
 int main() {
@@ -10,5 +20,6 @@ int main() {
   cout << "Please enter the number of images: ";
   cin >> n;
   Stacker image(file, n);
+
   return 0;
 }
